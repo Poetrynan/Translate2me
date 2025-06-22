@@ -1,0 +1,2 @@
+(建议手动Pip安装)
+pip install customtkinter faster-whisper av zhipuai sounddevice soundcard PyInstaller pyaudio CTranslate2

@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+*.pyo
+*.pdb
+*.egg-info/
+venv/
+.env
+
+# IDE
+.idea/
+*.iml
+*.vscode/
+
+# 输出和缓存
+output/
+*.log
+*.tmp
+
+# 配置和密钥
+config/config.json
+
+# 模型文件
+vad_model/
+manual_models/
+silero-vad-master/files/
+silero-vad-master/__pycache__/
+
+# Jupyter Notebook 检查点
+*.ipynb_checkpoints
+
+# 其他
+.DS_Store
+Thumbs.db 
