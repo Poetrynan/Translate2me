@@ -29,8 +29,8 @@
 1.  **克隆仓库**:
 
     ```bash
-    git clone https://github.com/your-repo/AI-ProScribe.git # 替换为您的仓库地址
-    cd AI-ProScribe
+    git clone https://github.com/your-repo/Translate2me.git # 替换为您的仓库地址
+    cd Translate2me
     ```
 
 2.  **创建并激活虚拟环境** (推荐):
