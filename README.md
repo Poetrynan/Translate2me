@@ -157,6 +157,16 @@
   - 感谢 [OpenAI Whisper](https://github.com/openai/whisper) 及 [HuggingFace](https://huggingface.co/collections/openai/whisper-20231116) 提供的语音识别模型资源。
   - 感谢 [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter) 提供的现代化UI组件库。
   - 以及所有依赖库的开发者们。
+## Figma版本部分原型图展示：
+<img width="2560" height="1600" alt="save" src="https://github.com/user-attachments/assets/05dc9fd7-3682-4d28-9447-a1c1d6c517db" />
+<img width="2560" height="1600" alt="main_application_window_2" src="https://github.com/user-attachments/assets/9794021b-4739-4665-b718-7d2c521d4a26" />
+<img width="2560" height="1600" alt="onboarding" src="https://github.com/user-attachments/assets/05e377c5-7ed3-4e43-9340-2722e29598bb" />
+<img width="1324" height="669" alt="image" src="https://github.com/user-attachments/assets/e971d5b7-420a-4d33-bc71-7d892a37425d" />
+
+
+
+
+
 
 ## 许可证 📜
 
