@@ -25,12 +25,28 @@ config/config.json
 # 模型文件
 vad_model/
 manual_models/
-silero-vad-master/files/
-silero-vad-master/__pycache__/
+silero-vad-master/
+models/sensevoice/*.onnx
+models/sensevoice/*.bin
+
+# 二进制文件
+bin/
 
 # Jupyter Notebook 检查点
 *.ipynb_checkpoints
 
 # 其他
 .DS_Store
-Thumbs.db 
+Thumbs.db
+
+# Front-end packages
+frontend/node_modules/
+frontend/electron/*.tar.bz2
+
+# Local custom skill
+ui-ux-pro-max-skill-main/
+
+# Internal dev docs
+design_system.md
+architecture_faq.md
+Agent.txt

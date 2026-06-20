@@ -1,175 +1,157 @@
-# Translate2me - 智能实时转录与翻译笔记 📢➡️📝
+# Translate2me — AI Lecture Companion 📢➡️📝
 
-🎉 欢迎使用 Translate2me - 一款专为留学生、研究人员和专业人士打造的智能实时转录与翻译笔记工具！本项目基于 GPLv3 许可证开源。
+> 专为留学生、研究人员和专业人士打造的 **本地优先** 智能实时转录 · 同传翻译 · 学术笔记生成工具。
 
-## 功能特点 ✨
+<img width="100%" alt="Translate2me Screenshot" src="screen.png" />
 
-  - 🎙️ **多源音频输入**: 支持麦克风输入和系统声音捕获（Loopback），方便录制会议、讲座或任何电脑音频。
-  - 🚀 **高性能实时转录**: 基于 `faster-whisper` 和本地优化的 `large-v3-turbo` 模型，提供快速准确的语音转文字服务。
-  - 🗣️ **智能场景模式**:
-      - **日常会话**: 通用场景下的流畅转录。
-      - **专业授课**: 可输入课程/专业名称，通过智谱AI生成定制化的Whisper提示词 (Prompt)，提升专业术语识别准确率。
-  - 🌐 **多语言翻译与润色**: 集成智谱AI (`glm-4`, `glm-4-flash`)，将转录文本快速翻译成多种目标语言（中文、English、日本語、한국어、Français、Deutsch），并进行专业化润色，生成高质量笔记。
-  - 🔇 **精准语音活动检测 (VAD)**: 采用 `Silero VAD` 技术，有效区分语音和静默，提升转录效率和准确性。
-  - ⚙️ **灵活配置**:
-      - 通过图形化界面轻松配置智谱AI API Key、选择AI模型、STT运行设备 (CPU/CUDA) 及计算类型 (`int8`, `float16`, `float32`)。
-      - 配置文件保存在 `config/config.json`。
-  - 💾 **结果保存**: 一键保存原始转录文本和翻译整理后的文本到 `output` 文件夹。
-  - 🎨 **现代化用户界面**: 使用 `customtkinter` 构建美观易用的界面。
+## ✨ Features / 功能亮点
 
-## 系统要求 💻
+| 功能 | 说明 |
+|------|------|
+| 🎙️ **实时语音转文字** | 基于 [SenseVoice-Small](https://github.com/FunAudioLLM/SenseVoice) (ONNX) 本地推理，支持 Auto/English/中文/粤语/日本語/한국어 多语种识别 |
+| 🌐 **实时同声传译** | 基于 [NLLB-200-Distilled-600M](https://huggingface.co/Xenova/nllb-200-distilled-600M) 本地翻译引擎，句级别实时双语字幕 |
+| 📝 **智能学术笔记** | LLM Agent 自动每 60 秒整理转录文本，去口语化、提炼核心概念、生成结构化笔记 |
+| 🔌 **多 LLM 厂商** | 一键预设智谱 AI / DeepSeek / OpenAI / Google Gemini / Anthropic Claude / Ollama (本地)，支持任何 OpenAI 兼容 API |
+| 🗣️ **智能场景模式** | 日常会话 + 专业授课模式，后者可输入学科名称自动生成领域术语提示词 |
+| 🌓 **暗色/浅色主题** | 一键切换 Light / Dark 主题，OLED 纯黑暗色模式 |
+| 🌍 **中英双语界面** | 内置 i18n，一键切换中文 / English UI |
+| 💾 **一键导出** | 转录原文、翻译笔记均可一键导出为 `.txt` 文件 |
 
-  - Python 3.8+ 环境
-  - Windows 操作系统 (当前主要测试环境，Linux/macOS可能需要调整)
-  - 推荐8GB以上内存 (运行 `large-v3-turbo` 模型)
-  - 如需GPU加速，需兼容 `faster-whisper` 的NVIDIA显卡及CUDA环境 (通常 CUDA 11.x 或 12.x)。
+## 🏗 Architecture / 技术架构
 
-## 安装指南 📦
+```
+┌─────────────────────────────────────────────────┐
+│               Electron (Node.js)                │
+│  ┌──────────┐  ┌──────────┐  ┌──────────────┐   │
+│  │SenseVoice│  │ NLLB-600M│  │ LLM API Proxy│   │
+│  │  (ONNX)  │  │(Xenova)  │  │ (OpenAI fmt) │   │
+│  └────┬─────┘  └────┬─────┘  └──────┬───────┘   │
+│       │ ASR         │ NMT          │ Refine     │
+├───────┴─────────────┴──────────────┴─────────────┤
+│              React + Vite + Tailwind             │
+│          (Monochrome Minimalist Design)          │
+└─────────────────────────────────────────────────┘
+```
 
-1.  **克隆仓库**:
+- **ASR**: `sherpa-onnx` + SenseVoice-Small — 本地离线语音识别
+- **NMT**: `@xenova/transformers` + NLLB-200-Distilled-600M — 本地离线翻译
+- **LLM**: 任何 OpenAI 兼容 API — 笔记整理/提示词生成
+- **Frontend**: React 18 + TypeScript + Tailwind CSS 3 + Lucide Icons
+- **Desktop**: Electron 28 — 跨平台桌面应用
 
-    ```bash
-    git clone https://github.com/your-repo/Translate2me.git # 替换为您的仓库地址
-    cd Translate2me
-    ```
+## 💻 System Requirements / 系统要求
 
-2.  **创建并激活虚拟环境** (推荐):
+- **OS**: Windows 10/11 (主要测试环境)
+- **RAM**: 8GB+ (推荐，运行 SenseVoice + NLLB 模型)
+- **Node.js**: 18+
+- **磁盘**: ~2GB（模型文件）
 
-    ```bash
-    python -m venv venv
-    venv\Scripts\activate  # Windows
-    # source venv/bin/activate  # Linux/macOS
-    ```
+## 📦 Installation / 安装指南
 
-3.  **安装依赖**:
-    根据 `requirements.txt` 文件安装依赖。由于部分库可能需要特定编译环境，建议手动逐个或分批安装：
+### 1. 克隆仓库
 
-    ```bash
-    pip install customtkinter faster-whisper av zhipuai sounddevice soundcard PyInstaller pyaudio CTranslate2
-    ```
+```bash
+git clone https://github.com/Poetrynan/Translate2me.git
+cd Translate2me
+```
 
-    **注意事项**:
+### 2. 安装前端依赖
 
-      * `faster-whisper` 依赖 `CTranslate2`。请确保 `CTranslate2` 与您的CPU/GPU环境兼容。
-      * `PyAudio` 在Windows上可能需要预编译的wheel文件，或者在系统中安装 PortAudio。
-      * `soundcard` 用于系统声音捕获。
+```bash
+cd frontend
+npm install
+```
 
-4.  **手动下载并存放模型文件**:
+### 3. 下载模型文件
 
-      - 本项目所需的所有模型（如 `large-v3-turbo` 语音识别模型、`silero_vad.onnx` 语音活动检测模型）**需用户自行手动下载**。
-      - 下载后请将模型文件分别放置到如下目录结构：
-        ```
-        manual_models/
-        └── large-v3-turbo/
-            ├── model.bin
-            ├── config.json
-            ├── tokenizer.json
-            └── vocabulary.txt
-        vad_model/
-        └── silero_vad.onnx
-        silero-vad-master/  # 若需源码或调优，可放置完整 silero-vad 仓库
-        ```
-      - 相关模型可在其[官方仓库](https://github.com/SYSTRAN/faster-whisper)、[HuggingFace](https://huggingface.co/collections/openai/whisper-20231116)、[Silero VAD](https://github.com/snakers4/silero-vad)等处获取。
-      - **注意：模型文件较大，请确保下载完整且放置路径正确，否则程序将无法正常运行。**
+本项目需要以下模型文件（首次运行时会自动下载 NLLB，但 SenseVoice 需手动放置）：
 
-5.  **VAD模型**:
+```
+models/
+└── sensevoice/
+    ├── model.onnx          # SenseVoice-Small ONNX 模型
+    ├── tokens.txt          # Token 词表
+    └── ...
 
-      - `Silero VAD` 模型 (`silero_vad.onnx`) 已包含在 `vad_model/` 目录中，并由 `audio_handler.py` 自动加载。
+bin/
+└── sherpa-onnx-offline.exe # sherpa-onnx 离线推理二进制
+```
 
-## 使用方法 🚀
+> 模型可从 [SenseVoice GitHub](https://github.com/FunAudioLLM/SenseVoice) 和 [sherpa-onnx releases](https://github.com/k2-fsa/sherpa-onnx/releases) 获取。
 
-1.  **运行主程序**:
+### 4. 启动开发模式
 
-    ```bash
-    python main.py
-    ```
+```bash
+cd frontend
+npm run electron:dev
+```
 
-2.  **初次运行**:
+## 🚀 Usage / 使用方法
 
-      - 如果未配置智谱AI API Key，应用会提示您在“应用设置”中输入。
+1. **选择输入设备** — 从配置栏下拉选择麦克风
+2. **选择模式** — 日常会话 / 专业授课
+3. **设置语言对** — 选择源语言和目标语言
+4. **点击录制按钮** — 中间的圆形按钮开始 / 停止录制
+5. **实时查看结果** — 左侧面板显示转录原文，右侧显示翻译笔记和同传字幕
+6. **整理笔记** — 点击"立即整理笔记"按钮，LLM 将对转录文本进行翻译 + 去口语化 + 结构化整理
 
-3.  **主界面操作**:
+### 配置 LLM
 
-      - **音频设备**: 从下拉菜单选择您的麦克风或"系统声音 (Loopback)"。
-      - **场景模式**:
-          - 选择"日常会话"可直接开始。
-          - 选择"专业授课"，输入课程/专业名称，点击"生成提示词"，等待提示词生成成功后再开始聆听。
-      - **翻译目标语言**: 选择您希望将转录内容翻译成的语言。
-      - **开始/停止聆听**: 点击"🎤 开始聆听"按钮启动实时转录。再次点击"⏹️ 停止聆听"结束。
-      - **翻译与整理**: 停止聆听后，若有转录内容，点击"⚡ 翻译与整理"按钮，将原文发送给智谱AI进行处理。
-      - **保存结果**: 分别点击"💾 保存原文"和"💾 保存结果"来保存文本文件到 `output` 目录。
-      - **清理重置**: 点击"🧹 清理重置"清空当前所有文本框内容。
-      - **应用设置 ⚙️**: 配置API Key、AI模型、STT设备和计算类型等。
+点击右上角 ⚙️ 设置图标：
+- **一键预设**: 快速选择智谱 AI、DeepSeek、OpenAI、Gemini、Claude、Ollama
+- **自定义**: 填入任何 OpenAI 兼容的 API Base URL、API Key 和模型名称
 
-## 核心组件 🧩
+## 📁 Project Structure / 项目结构
 
-  - `main.py`: 应用主入口，负责构建和管理图形用户界面 (GUI) 及各模块的协调。
-  - `audio_handler.py`: 处理音频输入（麦克风、系统声音），使用 `faster-whisper` 进行实时语音转录，集成 `Silero VAD` 进行语音活动检测。
-  - `text_processing_handler.py`: 调用智谱AI API，负责文本的翻译、润色以及为"专业授课"模式生成Whisper提示词。
-  - `config_manager.py`: 管理应用的配置信息（如API Key, 模型选择等），通过 `config/config.json` 文件进行持久化存储。
-  - `utils.py`: 提供通用的辅助函数，如文件保存、资源路径获取等。
+```
+Translate2me/
+├── frontend/
+│   ├── src/
+│   │   ├── App.tsx          # 主组件 (UI + 业务逻辑 + i18n)
+│   │   └── index.css        # 全局样式 & 动画
+│   ├── electron/
+│   │   ├── main.js          # Electron 主进程 (ASR/NMT/LLM 调度)
+│   │   ├── preload.js       # 安全 IPC 桥接
+│   │   └── launch.js        # 开发模式启动脚本
+│   ├── tailwind.config.js   # Tailwind 主题配置
+│   └── package.json
+├── bin/                     # sherpa-onnx 二进制
+├── models/                  # SenseVoice ONNX 模型
+├── config/                  # config.json (运行时自动生成)
+└── README.md
+```
 
-## 配置文件 `config/config.json` ⚙️
+## ⚙️ Configuration / 配置文件
 
-应用启动时会自动创建或加载此文件。您可以通过"应用设置"界面修改这些配置。
+配置自动保存在 `config/config.json`：
 
 ```json
 {
-    "zhipuai_api_key": "YOUR_ZHIPUAI_API_KEY",
-    "zhipuai_model": "glm-4", // 可选 "glm-4-flash"
-    "stt_device": "cpu", // 可选 "cuda"
-    "stt_compute_type": "int8", // 可选 "float16", "float32"
-    "target_language": "中文"
+  "llm_base_url": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+  "zhipuai_api_key": "",
+  "zhipuai_model": "glm-4-flash",
+  "stt_device": "cpu",
+  "stt_compute_type": "int8",
+  "source_language": "English",
+  "target_language": "中文",
+  "locale": "zh"
 }
 ```
 
-## API 使用说明 💡
+## 🙏 Acknowledgments / 鸣谢
 
-本应用使用智谱AI (ZhipuAI) 提供的 API 进行文本翻译、润色和专业提示词生成。默认情况下：
+- [SenseVoice](https://github.com/FunAudioLLM/SenseVoice) — 高效多语种语音识别
+- [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx) — 本地 ONNX 推理引擎
+- [NLLB-200](https://huggingface.co/Xenova/nllb-200-distilled-600M) — Meta 多语种翻译模型
+- [Xenova/transformers.js](https://github.com/xenova/transformers.js) — 浏览器 / Node.js 推理框架
+- [Electron](https://www.electronjs.org/) — 跨平台桌面框架
+- [React](https://react.dev/) + [Vite](https://vitejs.dev/) + [Tailwind CSS](https://tailwindcss.com/)
+- [Lucide Icons](https://lucide.dev/) — 精美图标库
 
-  - **翻译与润色**功能使用在"应用设置"中配置的智谱AI模型（默认为 `glm-4`）。
-  - **专业授课模式下的提示词生成**固定使用 `glm-4-flash` 模型，以保证快速响应。
-
-请确保您已在智谱AI开放平台获取 API Key 并在本应用中正确配置，以便使用相关功能。
-
-## 常见问题 ❓
-
-  - **转录不准确或速度慢?**
-      - 确保音频输入清晰，减少背景噪音。
-      - 在"专业授课"模式下，尝试生成更精准的提示词。
-      - 如果使用CPU，`large-v3-turbo` 模型可能会较慢。考虑在"应用设置"中切换到GPU (`cuda`) 并选择合适的计算类型 (`float16` 通常是速度和精度的良好平衡)。
-      - 检查 `stt_compute_type` 设置，`int8` 速度最快但精度可能略低，`float32` 精度最高但速度最慢。
-  - **无法捕获系统声音?**
-      - 确保您的系统支持Loopback音频捕获，并且没有其他应用独占音频设备。
-  - **API Key错误?**
-      - 请在智谱AI开放平台获取有效的API Key，并在"应用设置"中正确填写。
-
-## 贡献 🤝
-
-欢迎任何形式的贡献！无论是提交 Issue、发起 Pull Request，还是提供新的想法，都对项目非常有帮助。
-如果您发现了 Bug 或有功能建议，请随时在 "Issues" 页面提交。
-
-## 鸣谢 🙏
-
-  - 感谢 [智谱AI](https://open.bigmodel.cn/) 提供强大的大语言模型API支持。
-  - 感谢 [faster-whisper](https://github.com/SYSTRAN/faster-whisper) 项目提供高效的语音识别引擎。
-  - 感谢 [Silero VAD](https://github.com/snakers4/silero-vad) 提供精准的语音活动检测工具。
-  - 感谢 [OpenAI Whisper](https://github.com/openai/whisper) 及 [HuggingFace](https://huggingface.co/collections/openai/whisper-20231116) 提供的语音识别模型资源。
-  - 感谢 [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter) 提供的现代化UI组件库。
-  - 以及所有依赖库的开发者们。
-## Figma版本部分原型图展示：
-<img width="2560" height="1600" alt="save" src="https://github.com/user-attachments/assets/05dc9fd7-3682-4d28-9447-a1c1d6c517db" />
-<img width="2560" height="1600" alt="main_application_window_2" src="https://github.com/user-attachments/assets/9794021b-4739-4665-b718-7d2c521d4a26" />
-<img width="2560" height="1600" alt="onboarding" src="https://github.com/user-attachments/assets/05e377c5-7ed3-4e43-9340-2722e29598bb" />
-<img width="1324" height="669" alt="image" src="https://github.com/user-attachments/assets/e971d5b7-420a-4d33-bc71-7d892a37425d" />
-
-
-
-
-
-
-## 许可证 📜
+## 📜 License / 许可证
 
 本项目采用 **GNU General Public License v3.0 (GPLv3)** 进行许可。
 
-🎯 Translate2me - 让跨语言学习和工作更高效！
+---
+
+🎯 **Translate2me** — 让跨语言学习和工作更高效！

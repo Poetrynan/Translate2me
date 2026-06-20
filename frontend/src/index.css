@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* === Minimal Scrollbar === */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #A1A1AA; }
+.dark ::-webkit-scrollbar-thumb { background: #27272A; }
+.dark ::-webkit-scrollbar-thumb:hover { background: #3F3F46; }
+
+/* === Selection === */
+::selection { background: #E4E4E7; color: #09090B; }
+.dark ::selection { background: #27272A; color: #FAFAFA; }
+
+/* === Smooth everything === */
+* { transition-property: color, background-color, border-color, opacity;
+    transition-duration: 200ms;
+    transition-timing-function: ease; }
+
+/* === Record button pulse === */
+@keyframes record-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+}
+.recording-pulse { animation: record-pulse 2s ease-in-out infinite; }
+
+/* === Typing indicator === */
+@keyframes dot-bounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-4px); }
+}
+.typing-dot { animation: dot-bounce 1.4s ease-in-out infinite; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* === Dynamic Entry & Modal Transitions === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 350ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalBackdrop {
+  from { opacity: 0; backdrop-filter: blur(0px); }
+  to { opacity: 1; backdrop-filter: blur(2px); }
+}
+.animate-modalBackdrop {
+  animation: modalBackdrop 200ms ease-out forwards;
+}
+
+@keyframes modalContent {
+  from { opacity: 0; transform: scale(0.96) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.animate-modalContent {
+  animation: modalContent 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* === Reduced Motion Accessibility === */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
